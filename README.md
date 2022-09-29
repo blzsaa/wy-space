@@ -74,7 +74,9 @@ Sub-tasks of user story 1701:
 - [X] **1705**: find the total downlink maximum if **all satellites can start there pass at any minutes**, e.g. 00:12
   - Acceptance criteria:
     - the total downlink maximum of [pass-schedule-any-minute.txt](src/integration/resources/pass-schedule-any-minute.txt) should be 602, where 602 means the start time of the period is the 602nd minutes of the day e.i. 10:02 to 10:32.
-- [ ] **1706**: find the total downlink maximum even if **a satellite changes its speed** a.k.a. pass won't be periodic.
+- [X] **1706**: find the total downlink maximum even if **a satellite changes its speed** a.k.a. pass won't be periodic.
+  - Acceptance criteria:
+    - the total downlink maximum of [pass-schedule-with-changing-speed.txt](src/integration/resources/pass-schedule-with-changing-speed.txt) should be 151, where 151 means the start time of the period is the 151st minutes of the day e.i. 02:31 to 03:01.
 - [ ] **1707**: determine if **ONE** ground station has the bandwidth to support the total downlink maximum.
 - [ ] **1708**: determine if **MULTIPLE** ground stations have the bandwidth to support the total downlink maximum.
 - [ ] **1709**: package as a microservice
