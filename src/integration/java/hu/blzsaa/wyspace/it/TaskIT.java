@@ -24,7 +24,7 @@ class TaskIT {
   private @TempDir Path tempDir;
 
   @Test
-  void emptyFileShouldReturnWithNoRangeFoundException(@TempDir Path tempDir) throws IOException {
+  void emptyFileShouldReturnWithNoRangeFoundException() throws IOException {
     // given
     Path emptyFile = tempDir.resolve("emptyFile");
     Files.write(emptyFile, List.of(""));
@@ -44,7 +44,17 @@ class TaskIT {
     var actual = task.doTask(new String[] {"src/integration/resources/pass-schedule.txt"});
 
     // then
-    assertThat(actual).isEqualTo(20);
+    assertThat(actual).isEqualTo(600);
+  }
+
+  @Test
+  void passesCanStartsAndEndOnOtherThan30Or00() throws IOException {
+    // when
+    var actual =
+        task.doTask(new String[] {"src/integration/resources/pass-schedule-any-minute.txt"});
+
+    // then
+    assertThat(actual).isEqualTo(602);
   }
 
   @Test

@@ -35,8 +35,8 @@ class ParseRangeTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"00:30,1", "12:30,25", "23:30,47"})
-  void executeShouldReturnHaveManyHalfHourPassedSinceMidnight(String input, int expected) {
+  @CsvSource({"00:30,30", "12:30,750", "23:30,1410", "23:58,1438"})
+  void executeShouldReturnHaveManyHalfMinutePassedSinceMidnight(String input, int expected) {
     assertThat(underTest.execute(input, null)).isEqualTo(expected);
   }
 }
