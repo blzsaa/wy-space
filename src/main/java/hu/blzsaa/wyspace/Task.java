@@ -1,12 +1,10 @@
 package hu.blzsaa.wyspace;
 
 import hu.blzsaa.wyspace.calculator.MaximumTotalDownlinkCalculator;
-import hu.blzsaa.wyspace.dto.PassDto;
 import hu.blzsaa.wyspace.fileinterpreter.PassScheduleInterpreter;
 import hu.blzsaa.wyspace.util.ReaderFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
 
 public class Task {
 
@@ -24,8 +22,9 @@ public class Task {
   }
 
   public int doTask(String[] args) throws IOException {
-    BufferedReader br = readerFactory.createNewBufferedFileReader(args[0]);
-    List<PassDto> passDtos = passScheduleInterpreter.readInput(br);
-    return calculator.findRange(passDtos);
+    try (BufferedReader br = readerFactory.createNewBufferedFileReader(args[0])) {
+      passScheduleInterpreter.readInput(br).forEach(calculator::addRange);
+      return calculator.findRange();
+    }
   }
 }

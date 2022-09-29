@@ -54,3 +54,6 @@ Sub-tasks of user story 1701:
 - [ ] **1708**: determine if **MULTIPLE** ground stations have the bandwidth to support the total downlink maximum.
 - [ ] **1709**: package as a microservice
 - [ ] **1710**: add CD
+- [X] **1711**: fix out of memory error in case of reading too large files
+  - Acceptance criteria:
+    - reading large files should not throw out of memory exception
