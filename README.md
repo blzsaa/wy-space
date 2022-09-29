@@ -42,7 +42,7 @@ Sub-tasks of user story 1701:
 - [x] **1702**: create dummy project
   - Acceptance criteria:
     - hello-world on gradle and git
-- [ ] **1703**: add CI
+- [X] **1703**: add CI
   - Acceptance criteria:
     - successful run on github CI
 - [X] **1704**: find the total downlink maximum if **all satellites start there pass on either x:00 or x:30**
