@@ -45,7 +45,9 @@ Sub-tasks of user story 1701:
 - [ ] **1703**: add CI
   - Acceptance criteria:
     - successful run on github CI
-- [ ] **1704**: find the total downlink maximum if **all satellites start there pass on either x:00 or x:30**
+- [X] **1704**: find the total downlink maximum if **all satellites start there pass on either x:00 or x:30**
+  - Acceptance criteria:
+    - the total downlink maximum of [pass-schedule.txt](src/integration/resources/pass-schedule.txt) should be 20, where 20 means the 20th half hour of the day e.i. 10:00 to 10:30.
 - [ ] **1705**: find the total downlink maximum if **all satellites can start there pass at any minutes**, e.g. 00:12
 - [ ] **1706**: find the total downlink maximum even if **a satellite changes its speed** a.k.a. pass won't be periodic.
 - [ ] **1707**: determine if **ONE** ground station has the bandwidth to support the total downlink maximum.
