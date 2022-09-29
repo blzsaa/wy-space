@@ -1,0 +1,11 @@
+RedDwarf,2,00:00,01:30
+RedDwarf,2,02:30,04:30
+RedDwarf,2,05:00,06:30
+RedDwarf,2,07:30,09:00
+RedDwarf,2,10:00,11:30
+RedDwarf,2,12:30,14:00
+RedDwarf,2,15:00,16:30
+RedDwarf,2,17:30,19:00
+RedDwarf,2,20:00,21:30
+RedDwarf,2,22:30,00:00
+Narcissus,5,02:31,03:31

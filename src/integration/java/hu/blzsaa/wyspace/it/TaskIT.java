@@ -41,7 +41,7 @@ class TaskIT {
   @Test
   void solvingTestInputShouldReturn20AKA1000To1030() throws IOException {
     // when
-    var actual = task.doTask(new String[] {"src/integration/resources/pass-schedule.txt"});
+    var actual = task.doTask(createArgs("pass-schedule.txt"));
 
     // then
     assertThat(actual).isEqualTo(600);
@@ -50,11 +50,19 @@ class TaskIT {
   @Test
   void passesCanStartsAndEndOnOtherThan30Or00() throws IOException {
     // when
-    var actual =
-        task.doTask(new String[] {"src/integration/resources/pass-schedule-any-minute.txt"});
+    var actual = task.doTask(createArgs("pass-schedule-any-minute.txt"));
 
     // then
     assertThat(actual).isEqualTo(602);
+  }
+
+  @Test
+  void passesCanHappenNonPeriodicallyAsWell() throws IOException {
+    // when
+    var actual = task.doTask(createArgs("pass-schedule-with-changing-speed.txt"));
+
+    // then
+    assertThat(actual).isEqualTo(151);
   }
 
   @Test
@@ -74,5 +82,9 @@ class TaskIT {
 
     // then
     assertThat(actual).isEqualTo(0);
+  }
+
+  private static String[] createArgs(String fileName) {
+    return new String[] {"src/integration/resources/" + fileName};
   }
 }
