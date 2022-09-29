@@ -13,8 +13,8 @@ class ParseRange extends CellProcessorAdaptor implements StringCellProcessor {
 
     String time = value.toString();
     var times = time.split(":");
-    int hourInRange = Integer.parseInt(times[0]) * 2;
-    int minuteInRange = times[1].equals("30") ? 1 : 0;
-    return hourInRange + minuteInRange;
+    int hour = Integer.parseInt(times[0]);
+    int minute = Integer.parseInt(times[1]);
+    return hour * 60 + minute;
   }
 }

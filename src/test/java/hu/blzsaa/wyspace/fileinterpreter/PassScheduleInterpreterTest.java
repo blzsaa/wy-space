@@ -49,7 +49,7 @@ class PassScheduleInterpreterTest {
     // then
     assertThat(actual)
         .containsOnly(
-            new PassDtoBuilder().name("RedDwarf").strength(2).startTime(0).endTime(1).build());
+            new PassDtoBuilder().name("RedDwarf").strength(2).startTime(0).endTime(30).build());
   }
 
   @Test
@@ -63,7 +63,7 @@ class PassScheduleInterpreterTest {
     // then
     assertThat(actual)
         .containsOnly(
-            new PassDtoBuilder().name("RedDwarf").strength(2).startTime(0).endTime(1).build());
+            new PassDtoBuilder().name("RedDwarf").strength(2).startTime(0).endTime(30).build());
   }
 
   @Test
@@ -77,7 +77,7 @@ class PassScheduleInterpreterTest {
     // then
     assertThat(actual)
         .containsOnly(
-            new PassDtoBuilder().name(",RedDwarf").strength(2).startTime(0).endTime(1).build());
+            new PassDtoBuilder().name(",RedDwarf").strength(2).startTime(0).endTime(30).build());
   }
 
   @Test
@@ -92,8 +92,13 @@ class PassScheduleInterpreterTest {
     // then
     assertThat(actual)
         .containsOnly(
-            new PassDtoBuilder().name("RedDwarf").strength(2).startTime(0).endTime(1).build(),
-            new PassDtoBuilder().name("RedDwarf2").strength(7).startTime(9).endTime(25).build());
+            new PassDtoBuilder().name("RedDwarf").strength(2).startTime(0).endTime(30).build(),
+            new PassDtoBuilder()
+                .name("RedDwarf2")
+                .strength(7)
+                .startTime(9 * 30)
+                .endTime(25 * 30)
+                .build());
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")

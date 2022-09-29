@@ -35,6 +35,29 @@ Each line represents a single pass. A pass contains the satellite name, it’s b
 
 Include a README text file detailing how we run your solution. The README can be in a format of your choice, e.g. plaintext, markdown, Word document etc.
 
+## ASSUMPTIONS / DEFINITIONS
+- pass of a satellite start and end at exactly at the beginning of a minute, e.i. seconds, milliseconds etc. are always 0
+- **start times are inclusive while end times are exclusive**
+  - e.g. satellite A is broadcasting at 8:30, 8:31, 8:32 ... 9:28, 9:29 but not at 9:30
+- **total downlink** at any moment is the sum of the strength of all currently passing satellites
+  - e.g. total downlink at  8:29 is 2 while 8:30 is 7
+- **value of 30 minutes of total downlink** is the sum of total downlink in all minutes in that 30 minutes window
+  - e.g. value of 30 minutes of total downlink from 7:45 to 8:15 is: 135, which can be calculated the following way:
+    - total downlink from 7:45 to 8:00 is 2 in every minute, 15 * 2 = 30 overall
+    - total downlink from 8:00 to 8:15 is 7 in every minute, 15 * 7 = 105 overall
+    - therefore value of 30 minutes of total downlink is 135 (105 + 30)
+- **period of maximum total downlink** 
+  - is the 30 minutes where the total downlink will be at maximum, e.i. no other 30 minutes window have greater "overall strength"
+  - its marked as a single number, saying which minute is it, counting from midnight
+    - e.g. 0 is 00:00
+    - e.g. 62 is 01:02
+
+
+| NAME | STRENGTH | START TIME | END TIME |
+|------|----------|------------|----------|
+| A    | 2        | 07:30      | 08:30    |
+| B    | 5        | 08:00      | 09:00    |
+
 ## MINI BACKLOG
 
 Sub-tasks of user story 1701:
@@ -48,7 +71,7 @@ Sub-tasks of user story 1701:
 - [X] **1704**: find the total downlink maximum if **all satellites start there pass on either x:00 or x:30**
   - Acceptance criteria:
     - the total downlink maximum of [pass-schedule.txt](src/integration/resources/pass-schedule.txt) should be 20, where 20 means the 20th half hour of the day e.i. 10:00 to 10:30.
-- [ ] **1705**: find the total downlink maximum if **all satellites can start there pass at any minutes**, e.g. 00:12
+- [X] **1705**: find the total downlink maximum if **all satellites can start there pass at any minutes**, e.g. 00:12
 - [ ] **1706**: find the total downlink maximum even if **a satellite changes its speed** a.k.a. pass won't be periodic.
 - [ ] **1707**: determine if **ONE** ground station has the bandwidth to support the total downlink maximum.
 - [ ] **1708**: determine if **MULTIPLE** ground stations have the bandwidth to support the total downlink maximum.

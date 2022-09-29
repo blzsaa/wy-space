@@ -3,7 +3,6 @@ package hu.blzsaa.wyspace.calculator;
 import hu.blzsaa.wyspace.dto.PassDto;
 import hu.blzsaa.wyspace.exception.NoRangeFoundException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.stream.IntStream;
 
 public class MaximumTotalDownlinkCalculator {
@@ -11,7 +10,7 @@ public class MaximumTotalDownlinkCalculator {
   private final Long[] rangeStrengths;
 
   public MaximumTotalDownlinkCalculator() {
-    rangeStrengths = new Long[48];
+    rangeStrengths = new Long[24 * 60];
     Arrays.fill(rangeStrengths, 0L);
   }
 
@@ -21,15 +20,20 @@ public class MaximumTotalDownlinkCalculator {
   }
 
   public int findRange() {
-    int index =
-        IntStream.range(0, rangeStrengths.length)
-            .mapToObj(i -> new IndexRangeStrengthPair(i, rangeStrengths[i]))
-            .max(Comparator.comparingLong(IndexRangeStrengthPair::getRangeStrength))
-            .orElseThrow(NoRangeFoundException::new)
-            .getIndex();
-    if (rangeStrengths[index] == 0) {
+    long strengthOfFirstRange = Arrays.stream(rangeStrengths, 0, 30).mapToLong(i -> i).sum();
+    long startOfTheMaxPeriod = strengthOfFirstRange;
+    long period = strengthOfFirstRange;
+    int indexOfStartOfTheMaxPeriod = 0;
+    for (int i = 1; i < rangeStrengths.length - 30; i++) {
+      period = period - rangeStrengths[i - 1] + rangeStrengths[i + 29];
+      if (period > startOfTheMaxPeriod) {
+        indexOfStartOfTheMaxPeriod = i;
+        startOfTheMaxPeriod = period;
+      }
+    }
+    if (rangeStrengths[indexOfStartOfTheMaxPeriod] == 0) {
       throw new NoRangeFoundException();
     }
-    return index;
+    return indexOfStartOfTheMaxPeriod;
   }
 }
