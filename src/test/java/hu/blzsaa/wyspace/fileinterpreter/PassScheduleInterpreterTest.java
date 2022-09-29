@@ -2,14 +2,20 @@ package hu.blzsaa.wyspace.fileinterpreter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 
 import hu.blzsaa.wyspace.PassDtoBuilder;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.supercsv.exception.SuperCsvConstraintViolationException;
 
 class PassScheduleInterpreterTest {
@@ -90,6 +96,7 @@ class PassScheduleInterpreterTest {
             new PassDtoBuilder().name("RedDwarf2").strength(7).startTime(9).endTime(25).build());
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @ParameterizedTest
   @ValueSource(
       strings = {
@@ -103,7 +110,7 @@ class PassScheduleInterpreterTest {
     BufferedReader reader = new BufferedReader(new StringReader(line));
 
     // when
-    var actual = catchThrowable(() -> underTest.readInput(reader));
+    var actual = catchThrowable(() -> underTest.readInput(reader).collect(Collectors.toList()));
 
     // then
     assertThat(actual)
@@ -111,6 +118,7 @@ class PassScheduleInterpreterTest {
         .hasMessageContaining("null value encountered");
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @ParameterizedTest
   @ValueSource(
       strings = {"RedDwarf,2,0000,00:30", "RedDwarf,2,00:00,0030", "RedDwarf,2,00:00,0A30"})
@@ -119,11 +127,26 @@ class PassScheduleInterpreterTest {
     BufferedReader reader = new BufferedReader(new StringReader(line));
 
     // when
-    var actual = catchThrowable(() -> underTest.readInput(reader));
+    var actual = catchThrowable(() -> underTest.readInput(reader).collect(Collectors.toList()));
 
     // then
     assertThat(actual)
         .isInstanceOf(SuperCsvConstraintViolationException.class)
         .hasMessageContaining("does not match the regular expression '\\d\\d:\\d\\d'");
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  @Test
+  void readInputShouldCloseBufferedReaderAfterReadingIsOver() throws IOException {
+    // given
+    BufferedReader reader = Mockito.mock(BufferedReader.class);
+    IOException ioException = new IOException("message");
+    Mockito.doThrow(ioException).when(reader).read(any(), anyInt(), anyInt());
+
+    // when
+    var actual = catchThrowable(() -> underTest.readInput(reader).collect(Collectors.toList()));
+
+    // then
+    assertThat(actual).isInstanceOf(UncheckedIOException.class).hasCause(ioException);
   }
 }

@@ -4,8 +4,8 @@ import hu.blzsaa.wyspace.dto.PassDto;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import org.supercsv.cellprocessor.ParseInt;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.constraint.StrRegEx;
@@ -25,16 +25,16 @@ public class PassScheduleInterpreter {
         new NotNull(new StrRegEx("\\d\\d:\\d\\d", new ParseRange())), // endTime
       };
 
-  public List<PassDto> readInput(BufferedReader br) {
-    List<PassDto> passDtos = new ArrayList<>();
-    try (ICsvBeanReader beanReader = new CsvBeanReader(br, CsvPreference.STANDARD_PREFERENCE)) {
-      PassDto customer;
-      while ((customer = beanReader.read(PassDto.class, HEADER, CELL_PROCESSORS)) != null) {
-        passDtos.add(customer);
-      }
+  public Stream<PassDto> readInput(BufferedReader br) {
+    ICsvBeanReader beanReader = new CsvBeanReader(br, CsvPreference.STANDARD_PREFERENCE);
+    return Stream.generate(() -> readPassDtoFrom(beanReader)).takeWhile(Objects::nonNull);
+  }
+
+  private static PassDto readPassDtoFrom(ICsvBeanReader beanReader) {
+    try {
+      return beanReader.read(PassDto.class, HEADER, CELL_PROCESSORS);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-    return passDtos;
   }
 }
