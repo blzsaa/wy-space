@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("com.diffplug.spotless") version "6.11.0"
+    id("com.coditory.integration-test") version "1.4.4"
 }
 
 group = "hu.blzsaa"
@@ -11,11 +12,16 @@ repositories {
 }
 
 dependencies {
+    implementation("net.sf.supercsv:super-csv:2.4.0")
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.assertj:assertj-core:3.23.1")
+    testImplementation("com.google.code.bean-matchers:bean-matchers:0.14")
 }
 
-tasks.getByName<Test>("test") {
+tasks.withType<Test> {
     useJUnitPlatform()
 }
 
