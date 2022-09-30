@@ -51,6 +51,7 @@ Include a README text file detailing how we run your solution. The README can be
   - its marked as a single number, saying which minute is it, counting from midnight
     - e.g. 0 is 00:00
     - e.g. 62 is 01:02
+- **bandwidth of a ground station** supports 30 minutes of total downlink if in every minute of that 30 minutes the total downlink is less or equal than the bandwidth. 
 
 
 | NAME | STRENGTH | START TIME | END TIME |
@@ -77,7 +78,7 @@ Sub-tasks of user story 1701:
 - [X] **1706**: find the total downlink maximum even if **a satellite changes its speed** a.k.a. pass won't be periodic.
   - Acceptance criteria:
     - the total downlink maximum of [pass-schedule-with-changing-speed.txt](src/integration/resources/pass-schedule-with-changing-speed.txt) should be 151, where 151 means the start time of the period is the 151st minutes of the day e.i. 02:31 to 03:01.
-- [ ] **1707**: determine if **ONE** ground station has the bandwidth to support the total downlink maximum.
+- [X] **1707**: determine if **ONE** ground station has the bandwidth to support the total downlink maximum.
 - [ ] **1708**: determine if **MULTIPLE** ground stations have the bandwidth to support the total downlink maximum.
 - [ ] **1709**: package as a microservice
 - [ ] **1710**: add CD
