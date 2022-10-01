@@ -1,4 +1,4 @@
-package hu.blzsaa.wyspace.calculator;
+package hu.blzsaa.wyspace;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

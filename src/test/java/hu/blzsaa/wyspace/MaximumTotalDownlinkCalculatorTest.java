@@ -1,8 +1,7 @@
-package hu.blzsaa.wyspace.calculator;
+package hu.blzsaa.wyspace;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import hu.blzsaa.wyspace.PassDtoBuilder;
 import hu.blzsaa.wyspace.exception.NoRangeFoundException;
 import java.util.Collection;
 import java.util.List;
