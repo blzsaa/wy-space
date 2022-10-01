@@ -1,4 +1,4 @@
-package hu.blzsaa.wyspace.calculator;
+package hu.blzsaa.wyspace;
 
 import hu.blzsaa.wyspace.dto.PassDto;
 import hu.blzsaa.wyspace.exception.NoRangeFoundException;
@@ -6,8 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.enterprise.context.ApplicationScoped;
 
-public class MaximumTotalDownlinkCalculator {
+@ApplicationScoped
+class MaximumTotalDownlinkCalculator {
 
   private final List<Long> rangeStrengths;
 

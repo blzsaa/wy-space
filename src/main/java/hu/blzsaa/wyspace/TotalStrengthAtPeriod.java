@@ -1,4 +1,4 @@
-package hu.blzsaa.wyspace.calculator;
+package hu.blzsaa.wyspace;
 
 public class TotalStrengthAtPeriod {
   private int startingIndexOfPeriod;

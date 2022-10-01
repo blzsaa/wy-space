@@ -59,6 +59,18 @@ Include a README text file detailing how we run your solution. The README can be
 | A    | 2        | 07:30      | 08:30    |
 | B    | 5        | 08:00      | 09:00    |
 
+## USAGE
+
+- requirements for local development:
+  - docker
+  - java 11
+- requirements for deploying to google cloud as a function
+  - google cloud account
+  - gcloud
+- steps to deploy it to the GCP
+  1. `./gradlew build`
+  2. `gcloud functions deploy wy-space --entry-point=io.quarkus.gcp.functions.QuarkusHttpFunction --trigger-http --runtime=java11 --source=build --allow-unauthenticated`
+
 ## MINI BACKLOG
 
 Sub-tasks of user story 1701:
@@ -80,7 +92,7 @@ Sub-tasks of user story 1701:
     - the total downlink maximum of [pass-schedule-with-changing-speed.txt](src/integration/resources/pass-schedule-with-changing-speed.txt) should be 151, where 151 means the start time of the period is the 151st minutes of the day e.i. 02:31 to 03:01.
 - [X] **1707**: determine if **ONE** ground station has the bandwidth to support the total downlink maximum.
 - [ ] **1708**: determine if **MULTIPLE** ground stations have the bandwidth to support the total downlink maximum.
-- [ ] **1709**: package as a microservice
+- [X] **1709**: package as a ~~microservice~~ function
 - [ ] **1710**: add CD
 - [X] **1711**: fix out of memory error in case of reading too large files
   - Acceptance criteria:

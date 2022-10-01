@@ -1,9 +1,11 @@
-package hu.blzsaa.wyspace.calculator;
+package hu.blzsaa.wyspace;
 
 import hu.blzsaa.wyspace.dto.ResultDto;
 import java.time.LocalTime;
+import javax.enterprise.context.ApplicationScoped;
 
-public class ResultTransformer {
+@ApplicationScoped
+class ResultTransformer {
 
   public ResultDto transform(MaximumTotalDownlinkResultParam dto, boolean downloadable) {
     ResultDto resultDto = new ResultDto();

@@ -1,11 +1,11 @@
 package hu.blzsaa.wyspace.util;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+import javax.enterprise.context.ApplicationScoped;
 
+@ApplicationScoped
 public class ReaderFactory {
-  public BufferedReader createNewBufferedFileReader(String s) throws FileNotFoundException {
-    return new BufferedReader(new FileReader(s));
+  public BufferedReader createNewBufferedFileReader(InputStream inputStream) {
+    return new BufferedReader(new InputStreamReader(inputStream));
   }
 }

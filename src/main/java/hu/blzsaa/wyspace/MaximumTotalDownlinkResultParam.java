@@ -1,4 +1,4 @@
-package hu.blzsaa.wyspace.calculator;
+package hu.blzsaa.wyspace;
 
 import java.util.List;
 import java.util.Objects;

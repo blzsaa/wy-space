@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.stream.Stream;
+import javax.enterprise.context.ApplicationScoped;
 import org.supercsv.cellprocessor.ParseInt;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.constraint.StrRegEx;
@@ -14,6 +15,7 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
+@ApplicationScoped
 public class PassScheduleInterpreter {
 
   private static final String[] HEADER = new String[] {"name", "strength", "startTime", "endTime"};

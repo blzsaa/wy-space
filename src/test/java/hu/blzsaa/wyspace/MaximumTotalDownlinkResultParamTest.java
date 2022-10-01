@@ -1,4 +1,4 @@
-package hu.blzsaa.wyspace.calculator;
+package hu.blzsaa.wyspace;
 
 import static com.google.code.beanmatchers.BeanMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -6,11 +6,11 @@ import static org.hamcrest.Matchers.allOf;
 
 import org.junit.jupiter.api.Test;
 
-class TotalStrengthAtPeriodTest {
+class MaximumTotalDownlinkResultParamTest {
   @Test
   void testBean() {
     assertThat(
-        TotalStrengthAtPeriod.class,
+        MaximumTotalDownlinkResultParam.class,
         allOf(
             hasValidBeanConstructor(),
             hasValidGettersAndSetters(),
