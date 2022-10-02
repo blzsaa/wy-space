@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "hu.blzsaa"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -68,7 +68,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 docker {
     name = "wy-space"
     copySpec.from(configurations["invoker"].files.iterator().next().absolutePath).into("/home")
-    copySpec.from("build/wy-space-1.0-SNAPSHOT-runner.jar").into("/home")
+    copySpec.from("build/wy-space-${project.version}-runner.jar").into("/home")
 }
 
 tasks["dockerPrepare"].dependsOn("quarkusBuild")

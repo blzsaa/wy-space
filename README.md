@@ -97,6 +97,12 @@ curl -F "file=@./src/integration/resources/pass-schedule.txt"  https://us-centra
      --trigger-http --runtime=java11 --source=build --allow-unauthenticated
      ```
 
+## RELEASE
+
+1. `npx commit-and-tag-version --packageFiles build.gradle --bumpFiles build.gradle.kts`
+2. `git push --follow-tags origin main`
+3. create release on GitHub
+
 ## MINI BACKLOG
 
 Sub-tasks of user story 1701:
