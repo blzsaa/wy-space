@@ -3,9 +3,9 @@ package hu.blzsaa.wyspace.http;
 import static org.hibernate.validator.internal.engine.path.PathImpl.createPathFromString;
 import static org.mockito.Mockito.*;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import com.google.gson.Gson;
 import hu.blzsaa.wyspace.DownlinkService;
 import hu.blzsaa.wyspace.dto.InputDto;
 import hu.blzsaa.wyspace.dto.ResultDto;
@@ -32,7 +32,7 @@ class MaxTotalDownlinkFunctionTest {
 
   @Mock private HttpRequest httpRequest;
   @Mock private HttpResponse httpResponse;
-  @Mock private Gson gson;
+  @Mock private JsonMapper jsonMapper;
   @Mock private BufferedWriter writer;
 
   private MaxTotalDownlinkFunction underTest;
@@ -46,7 +46,7 @@ class MaxTotalDownlinkFunctionTest {
     doReturn(writer).when(httpResponse).getWriter();
 
     underTest =
-        new MaxTotalDownlinkFunction(downlinkService, httpRequestToInputDtoParser, gson, log);
+        new MaxTotalDownlinkFunction(downlinkService, httpRequestToInputDtoParser, jsonMapper, log);
   }
 
   @AfterEach
@@ -57,13 +57,11 @@ class MaxTotalDownlinkFunctionTest {
   @Test
   void serviceShouldFirstCallParserThenDownlinkService() throws Exception {
     // given
-    InputDto inputDto = new InputDto();
-    inputDto.setBandwidth(12L);
-    ResultDto resultDto = new ResultDto();
-    resultDto.setStartTime(LocalTime.NOON);
+    InputDto inputDto = new InputDto(null, 12L);
+    ResultDto resultDto = new ResultDto(LocalTime.NOON, LocalTime.NOON, true);
     doReturn(inputDto).when(httpRequestToInputDtoParser).parse(httpRequest);
     doReturn(resultDto).when(downlinkService).doTask(inputDto);
-    doReturn(EXPECTED).when(gson).toJson(resultDto);
+    doReturn(EXPECTED).when(jsonMapper).writeValueAsString(resultDto);
 
     // when
     underTest.service(httpRequest, httpResponse);
@@ -86,14 +84,14 @@ class MaxTotalDownlinkFunctionTest {
                 mockConstraintViolation("field3", "message3")));
     doThrow(exception).when(httpRequestToInputDtoParser).parse(httpRequest);
     doReturn(EXPECTED)
-        .when(gson)
-        .toJson(
+        .when(jsonMapper)
+        .writeValueAsString(
             Map.of(
                 "violations",
                 Set.of(
-                    createViolationDto("field1", "message1"),
-                    createViolationDto("field2", "message2"),
-                    createViolationDto("field3", "message3"))));
+                    new ViolationDto("field1", "message1"),
+                    new ViolationDto("field2", "message2"),
+                    new ViolationDto("field3", "message3"))));
 
     // when
     underTest.service(httpRequest, httpResponse);
@@ -110,7 +108,9 @@ class MaxTotalDownlinkFunctionTest {
     // given
     IllegalArgumentException exception = new IllegalArgumentException("messageFromException");
     doThrow(exception).when(httpRequestToInputDtoParser).parse(httpRequest);
-    doReturn(EXPECTED).when(gson).toJson(Map.of("message", "messageFromException"));
+    doReturn(EXPECTED)
+        .when(jsonMapper)
+        .writeValueAsString(Map.of("message", "messageFromException"));
 
     // when
     underTest.service(httpRequest, httpResponse);
@@ -127,12 +127,5 @@ class MaxTotalDownlinkFunctionTest {
     doReturn(createPathFromString(propertyPath)).when(e).getPropertyPath();
     doReturn(message).when(e).getMessage();
     return e;
-  }
-
-  private ViolationDto createViolationDto(String field, String message) {
-    var dto = new ViolationDto();
-    dto.setField(field);
-    dto.setMessage(message);
-    return dto;
   }
 }

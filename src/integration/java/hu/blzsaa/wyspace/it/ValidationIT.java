@@ -5,9 +5,6 @@ import static io.restassured.RestAssured.given;
 
 import hu.blzsaa.wyspace.dto.ResultDto;
 import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import io.restassured.config.RestAssuredConfig;
-import io.restassured.mapper.ObjectMapperType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalTime;
@@ -40,9 +37,6 @@ class ValidationIT {
 
     RestAssured.baseURI = "http://" + container.getHost();
     RestAssured.port = container.getMappedPort(8080);
-    RestAssured.config =
-        RestAssuredConfig.config()
-            .objectMapperConfig(new ObjectMapperConfig(ObjectMapperType.GSON));
   }
 
   @Test
@@ -74,5 +68,20 @@ class ValidationIT {
     Assertions.assertThat(actual.body().asString())
         .contains(
             "{\"violations\":[{\"field\":\"doTask.inputDto.inputStream\",\"message\":\"must not be null\"}]}");
+  }
+
+  @Test
+  void linesOfTheInputFileShouldBeValidatedAsWell() {
+    // missing  input, header
+    ExtractableResponse<Response> actual =
+        ITHelper.send("src/integration/resources/malformed-pass-schedule.txt", "1");
+
+    Assertions.assertThat(actual.statusCode()).isEqualTo(400);
+    Assertions.assertThat(actual.body().asString())
+        .contains(
+            "{\"violations\":[{"
+                + "\"field\":\"parseLine.fileLineDto\","
+                + "\"message\":\"Invalid line: FileLineDto[lineNumber=1, fields=[RedDwarf, 2, 00:00, 0130]], "
+                + "end time is not valid, valid time format is HH:mm\"}]}");
   }
 }

@@ -4,9 +4,6 @@ import static hu.blzsaa.wyspace.it.ITHelper.resultDtoFrom;
 
 import hu.blzsaa.wyspace.dto.ResultDto;
 import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import io.restassured.config.RestAssuredConfig;
-import io.restassured.mapper.ObjectMapperType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalTime;
@@ -41,9 +38,6 @@ class FunctionIT {
 
     RestAssured.baseURI = "http://" + container.getHost();
     RestAssured.port = container.getMappedPort(8080);
-    RestAssured.config =
-        RestAssuredConfig.config()
-            .objectMapperConfig(new ObjectMapperConfig(ObjectMapperType.GSON));
   }
 
   @SuppressWarnings("unchecked")

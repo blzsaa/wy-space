@@ -2,6 +2,7 @@ package hu.blzsaa.wyspace;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import hu.blzsaa.wyspace.dto.PassDto;
 import hu.blzsaa.wyspace.exception.NoRangeFoundException;
 import java.util.Collection;
 import java.util.List;
@@ -32,67 +33,71 @@ class MaximumTotalDownlinkCalculatorTest {
   @Test
   void findRangeShouldReturnTheRangeOfTheSatelliteIfThereIsOnlyOnePresent() {
     // given
-    underTest.addRange(new PassDtoBuilder().startTime(60).endTime(90).strength(1).build());
+    underTest.addRange(new PassDto(1, 60, 90));
 
     // when
     var actual = underTest.findRange();
 
     // when
-    assertThat(actual).isEqualTo(createFrom(60, sameStrengthEverywhere(1L)));
+    assertThat(actual)
+        .isEqualTo(new MaximumTotalDownlinkResultParam(sameStrengthEverywhere(1L), 60));
   }
 
   @Test
   void findRangeShouldReturnTheRangeOfTheStrongestSatelliteIfThereIsNoOverlappingRanges() {
     // given
-    underTest.addRange(new PassDtoBuilder().startTime(60).endTime(90).strength(1).build());
-    underTest.addRange(new PassDtoBuilder().startTime(90).endTime(150).strength(2).build());
-    underTest.addRange(new PassDtoBuilder().startTime(180).endTime(210).strength(1).build());
+    underTest.addRange(new PassDto(1, 60, 90));
+    underTest.addRange(new PassDto(2, 90, 150));
+    underTest.addRange(new PassDto(1, 180, 210));
 
     // when
     var actual = underTest.findRange();
 
     // when
-    assertThat(actual).isEqualTo(createFrom(90, sameStrengthEverywhere(2L)));
+    assertThat(actual)
+        .isEqualTo(new MaximumTotalDownlinkResultParam(sameStrengthEverywhere(2L), 90));
   }
 
   @Test
   void findRangeShouldReturnTheRangeOfMaximumTotalDownlinkEvenWhenThereAreOverlappingRanges() {
     // given
-    underTest.addRange(new PassDtoBuilder().startTime(60).endTime(90).strength(1).build());
-    underTest.addRange(new PassDtoBuilder().startTime(90).endTime(150).strength(2).build());
-    underTest.addRange(new PassDtoBuilder().startTime(180).endTime(210).strength(1).build());
-    underTest.addRange(new PassDtoBuilder().startTime(180).endTime(210).strength(1).build());
-    underTest.addRange(new PassDtoBuilder().startTime(180).endTime(210).strength(1).build());
+    underTest.addRange(new PassDto(1, 60, 90));
+    underTest.addRange(new PassDto(2, 90, 150));
+    underTest.addRange(new PassDto(1, 180, 210));
+    underTest.addRange(new PassDto(1, 180, 210));
+    underTest.addRange(new PassDto(1, 180, 210));
 
     // when
     var actual = underTest.findRange();
 
     // when
-    assertThat(actual).isEqualTo(createFrom(180, sameStrengthEverywhere(3L)));
+    assertThat(actual)
+        .isEqualTo(new MaximumTotalDownlinkResultParam(sameStrengthEverywhere(3L), 180));
   }
 
   @Test
   void findRangeShouldAddStrengthToAllTimeSlotsBetweenStartAndEndTime() {
     // given
-    underTest.addRange(new PassDtoBuilder().startTime(60).endTime(150).strength(2).build());
-    underTest.addRange(new PassDtoBuilder().startTime(120).endTime(150).strength(2).build());
-    underTest.addRange(new PassDtoBuilder().startTime(210).endTime(240).strength(3).build());
+    underTest.addRange(new PassDto(2, 60, 150));
+    underTest.addRange(new PassDto(2, 120, 150));
+    underTest.addRange(new PassDto(3, 210, 240));
 
     // when
     var actual = underTest.findRange();
 
     // when
-    assertThat(actual).isEqualTo(createFrom(120, sameStrengthEverywhere(4L)));
+    assertThat(actual)
+        .isEqualTo(new MaximumTotalDownlinkResultParam(sameStrengthEverywhere(4L), 120));
   }
 
   @Test
   void findRangeShouldHandleRangesThatAreNotDividableBy30() {
     // given
-    underTest.addRange(new PassDtoBuilder().startTime(60).endTime(90).strength(1).build());
-    underTest.addRange(new PassDtoBuilder().startTime(90).endTime(150).strength(2).build());
-    underTest.addRange(new PassDtoBuilder().startTime(183).endTime(213).strength(1).build());
-    underTest.addRange(new PassDtoBuilder().startTime(185).endTime(215).strength(1).build());
-    underTest.addRange(new PassDtoBuilder().startTime(180).endTime(210).strength(1).build());
+    underTest.addRange(new PassDto(1, 60, 90));
+    underTest.addRange(new PassDto(2, 90, 150));
+    underTest.addRange(new PassDto(1, 183, 213));
+    underTest.addRange(new PassDto(1, 185, 215));
+    underTest.addRange(new PassDto(1, 180, 210));
 
     // when
     var actual = underTest.findRange();
@@ -100,36 +105,29 @@ class MaximumTotalDownlinkCalculatorTest {
     // when
     assertThat(actual)
         .isEqualTo(
-            createFrom(
-                183,
+            new MaximumTotalDownlinkResultParam(
                 Stream.of(
                         sameStrengthInSubList(2, 2),
                         sameStrengthInSubList(3, 25),
                         sameStrengthInSubList(2, 3))
                     .flatMap(Collection::stream)
-                    .collect(Collectors.toList())));
+                    .collect(Collectors.toList()),
+                183));
   }
 
   @Test
   void addRangeShouldHandleMidnightForEndTimeAsWell() {
     // given
     int lastHalfHour = 23 * 60 + 30;
-    underTest.addRange(new PassDtoBuilder().startTime(0).endTime(0).strength(1).build());
-    underTest.addRange(new PassDtoBuilder().startTime(lastHalfHour).endTime(0).strength(1).build());
+    underTest.addRange(new PassDto(1, 0, 0));
+    underTest.addRange(new PassDto(1, lastHalfHour, 0));
 
     // when
     var actual = underTest.findRange();
 
     // when
-    assertThat(actual).isEqualTo(createFrom(lastHalfHour, sameStrengthEverywhere(2L)));
-  }
-
-  private MaximumTotalDownlinkResultParam createFrom(
-      int indexOfStartOfTheMaxPeriod, List<Long> range) {
-    MaximumTotalDownlinkResultParam dto = new MaximumTotalDownlinkResultParam();
-    dto.setIndexOfStartOfTheMaxPeriod(indexOfStartOfTheMaxPeriod);
-    dto.setRange(range);
-    return dto;
+    assertThat(actual)
+        .isEqualTo(new MaximumTotalDownlinkResultParam(sameStrengthEverywhere(2L), lastHalfHour));
   }
 
   private static List<Long> sameStrengthEverywhere(long x) {

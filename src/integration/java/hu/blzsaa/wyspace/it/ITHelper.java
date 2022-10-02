@@ -32,10 +32,6 @@ final class ITHelper {
   }
 
   static ResultDto resultDtoFrom(LocalTime startTime, LocalTime endTime, boolean downloadable) {
-    ResultDto resultDto = new ResultDto();
-    resultDto.setStartTime(startTime);
-    resultDto.setEndTime(endTime);
-    resultDto.setDownloadable(downloadable);
-    return resultDto;
+    return new ResultDto(startTime, endTime, downloadable);
   }
 }

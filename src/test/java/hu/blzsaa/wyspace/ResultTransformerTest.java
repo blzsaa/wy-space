@@ -21,19 +21,13 @@ class ResultTransformerTest {
   void transformShouldParseMinutesSinceMidnightToLocalTimeForStartTimeAddHalfHourForEndTime() {
     // given
     MaximumTotalDownlinkResultParam maximumTotalDownlinkResultParam =
-        new MaximumTotalDownlinkResultParam();
-    List<Long> range = List.of(1L, 2L, 3L);
-    maximumTotalDownlinkResultParam.setRange(range);
-    maximumTotalDownlinkResultParam.setIndexOfStartOfTheMaxPeriod(11 * 60 + 12);
+        new MaximumTotalDownlinkResultParam(List.of(1L, 2L, 3L), 11 * 60 + 12);
 
     // when
     var actual = underTest.transform(maximumTotalDownlinkResultParam, true);
 
     // then
-    ResultDto resultDto = new ResultDto();
-    resultDto.setStartTime(LocalTime.of(11, 12));
-    resultDto.setEndTime(LocalTime.of(11, 42));
-    resultDto.setDownloadable(true);
+    ResultDto resultDto = new ResultDto(LocalTime.of(11, 12), LocalTime.of(11, 42), true);
     assertThat(actual).isEqualTo(resultDto);
   }
 }

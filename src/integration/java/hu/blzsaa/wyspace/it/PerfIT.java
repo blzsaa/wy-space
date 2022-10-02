@@ -5,9 +5,6 @@ import static hu.blzsaa.wyspace.it.ITHelper.send;
 
 import hu.blzsaa.wyspace.dto.ResultDto;
 import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import io.restassured.config.RestAssuredConfig;
-import io.restassured.mapper.ObjectMapperType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.io.BufferedWriter;
@@ -36,7 +33,7 @@ class PerfIT {
   @Container
   public GenericContainer<?> container =
       new GenericContainer<>(DockerImageName.parse("wy-space:latest"))
-          .withEnv("JAVA_OPTS", "-Xmx100m -Xms100m -XX:PermSize=100m -XX:MaxPermSize=200m -Xss100m")
+          .withEnv("JAVA_OPTS", "-Xmx100m -Xms100m -Xss100m")
           .withExposedPorts(8080);
 
   @SuppressWarnings({"java:S2696"})
@@ -47,9 +44,6 @@ class PerfIT {
 
     RestAssured.baseURI = "http://" + container.getHost();
     RestAssured.port = container.getMappedPort(8080);
-    RestAssured.config =
-        RestAssuredConfig.config()
-            .objectMapperConfig(new ObjectMapperConfig(ObjectMapperType.GSON));
   }
 
   @Test

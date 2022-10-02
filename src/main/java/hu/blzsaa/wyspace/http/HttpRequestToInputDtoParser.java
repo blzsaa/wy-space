@@ -9,13 +9,10 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class HttpRequestToInputDtoParser {
+class HttpRequestToInputDtoParser {
 
   InputDto parse(HttpRequest httpRequest) {
-    var inputDto = new InputDto();
-    inputDto.setInputStream(getInputStreamReader(httpRequest));
-    inputDto.setBandwidth(getBandwidth(httpRequest));
-    return inputDto;
+    return new InputDto(getInputStreamReader(httpRequest), getBandwidth(httpRequest));
   }
 
   private InputStream getInputStreamReader(HttpRequest httpRequest) {

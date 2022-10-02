@@ -1,6 +1,11 @@
 # WY Space exercise
 
-## TASK
+# Content
+- [Task description](#user-story-1701)
+- [assumptions / definitions](#assumptions--definitions)
+- [usage](#usage)
+- [development](#development)
+- [mini backlog](#mini-backlog)
 
 ### Intro
 
@@ -69,12 +74,18 @@ curl -F "file=@./src/integration/resources/pass-schedule.txt"  https://us-centra
 * Header _Content-Type_ must include _multipart/form-data_
 * file is mandatory parameter
 * bandwidth is optional parameter
+* lines of the file should be: name,strength/bandwidth,start-time,end-time where:
+  * **name** is a string containing the name of the satellite
+  * **strength/bandwidth** per 30 minutes period it has to be a positive natural number
+  * **start-time** is the start time of the pass, it follows HH:mm pattern
+  * **end-time** is the end time of the pass, it follows HH:mm pattern
+  * all fields should be separated by comma without any space
 
 ## DEVELOPMENT
 
 - requirements for local development:
   - docker
-  - java 11
+  - java 17
 - requirements for deploying to google cloud as a function
   - google cloud account
   - gcloud
@@ -106,9 +117,11 @@ Sub-tasks of user story 1701:
   - Acceptance criteria:
     - the total downlink maximum of [pass-schedule-with-changing-speed.txt](src/integration/resources/pass-schedule-with-changing-speed.txt) should be 151, where 151 means the start time of the period is the 151st minutes of the day e.i. 02:31 to 03:01.
 - [X] **1707**: determine if **ONE** ground station has the bandwidth to support the total downlink maximum.
-- [ ] **1708**: determine if **MULTIPLE** ground stations have the bandwidth to support the total downlink maximum.
+- [X] ~~**1708**: determine if **MULTIPLE** ground stations have the bandwidth to support the total downlink maximum.~~
+  -  out of scope due after rereading the description: the bandwidth of **the** ground station should be provided as an argument to the program
 - [X] **1709**: package as a ~~microservice~~ function
 - [X] **1710**: add CD
 - [X] **1711**: fix out of memory error in case of reading too large files
   - Acceptance criteria:
     - reading large files should not throw out of memory exception
+- [X] **1712**: upgrade to java 17
