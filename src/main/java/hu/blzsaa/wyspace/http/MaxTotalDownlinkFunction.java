@@ -1,9 +1,9 @@
 package hu.blzsaa.wyspace.http;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import com.google.gson.Gson;
 import hu.blzsaa.wyspace.DownlinkService;
 import hu.blzsaa.wyspace.dto.ResultDto;
 import java.io.Writer;
@@ -22,17 +22,17 @@ public class MaxTotalDownlinkFunction implements HttpFunction {
   private final DownlinkService downlinkService;
   private final HttpRequestToInputDtoParser httpRequestToInputDtoParser;
 
-  private final Gson gson;
+  private final JsonMapper jsonMapper;
   private final Logger log;
 
   public MaxTotalDownlinkFunction(
       DownlinkService downlinkService,
       HttpRequestToInputDtoParser httpRequestToInputDtoParser,
-      Gson gson,
+      JsonMapper jsonMapper,
       Logger log) {
     this.downlinkService = downlinkService;
     this.httpRequestToInputDtoParser = httpRequestToInputDtoParser;
-    this.gson = gson;
+    this.jsonMapper = jsonMapper;
     this.log = log;
   }
 
@@ -44,28 +44,22 @@ public class MaxTotalDownlinkFunction implements HttpFunction {
       var input = httpRequestToInputDtoParser.parse(httpRequest);
       ResultDto resultDto = downlinkService.doTask(input);
       httpResponse.setStatusCode(200);
-      writer.write(gson.toJson(resultDto));
+      writer.write(jsonMapper.writeValueAsString(resultDto));
     } catch (ConstraintViolationException e) {
       httpResponse.setStatusCode(400);
       var violations = collectViolations(e);
       log.info("validation problem", e);
-      writer.write(gson.toJson(Map.of("violations", violations)));
+      writer.write(jsonMapper.writeValueAsString(Map.of("violations", violations)));
     } catch (Exception e) {
       httpResponse.setStatusCode(500);
-      writer.write(gson.toJson(Map.of("message", e.getMessage())));
+      writer.write(jsonMapper.writeValueAsString(Map.of("message", e.getMessage())));
       log.info("unknown exception", e);
     }
   }
 
   private static Set<ViolationDto> collectViolations(ConstraintViolationException e) {
     return e.getConstraintViolations().stream()
-        .map(
-            c -> {
-              ViolationDto violation = new ViolationDto();
-              violation.setField(c.getPropertyPath().toString());
-              violation.setMessage(c.getMessage());
-              return violation;
-            })
+        .map(c -> new ViolationDto(c.getPropertyPath().toString(), c.getMessage()))
         .collect(Collectors.toSet());
   }
 }

@@ -18,41 +18,36 @@ class MaximumTotalDownlinkCalculator {
   }
 
   public void addRange(PassDto p) {
-    int endTime = p.getEndTime() == 0 ? 24 * 60 : p.getEndTime();
-    IntStream.range(p.getStartTime(), endTime)
-        .forEach(i -> rangeStrengths.set(i, rangeStrengths.get(i) + p.getStrength()));
+    int endTime = p.endTime() == 0 ? 24 * 60 : p.endTime();
+    IntStream.range(p.startTime(), endTime)
+        .forEach(i -> rangeStrengths.set(i, rangeStrengths.get(i) + p.strength()));
   }
 
   public MaximumTotalDownlinkResultParam findRange() {
     return IntStream.range(0, rangeStrengths.size() - 29)
         .parallel()
         .mapToObj(this::calculateTotalDownlinkOfPeriodStartingAtIndex)
-        .max(Comparator.comparing(TotalStrengthAtPeriod::getStrength))
+        .max(Comparator.comparing(TotalStrengthAtPeriod::strength))
         .map(this::transform)
         .map(this::validateResult)
         .orElseThrow(NoRangeFoundException::new);
   }
 
   private MaximumTotalDownlinkResultParam validateResult(MaximumTotalDownlinkResultParam a) {
-    if (rangeStrengths.get(a.getIndexOfStartOfTheMaxPeriod()) == 0) {
+    if (rangeStrengths.get(a.indexOfStartOfTheMaxPeriod()) == 0) {
       throw new NoRangeFoundException();
     }
     return a;
   }
 
   private MaximumTotalDownlinkResultParam transform(TotalStrengthAtPeriod max) {
-    MaximumTotalDownlinkResultParam dto = new MaximumTotalDownlinkResultParam();
-    dto.setIndexOfStartOfTheMaxPeriod(max.getStartingIndexOfPeriod());
-    dto.setRange(
-        rangeStrengths.subList(
-            max.getStartingIndexOfPeriod(), max.getStartingIndexOfPeriod() + 30));
-    return dto;
+    List<Long> range =
+        rangeStrengths.subList(max.startingIndexOfPeriod(), max.startingIndexOfPeriod() + 30);
+    return new MaximumTotalDownlinkResultParam(range, max.startingIndexOfPeriod());
   }
 
   private TotalStrengthAtPeriod calculateTotalDownlinkOfPeriodStartingAtIndex(int index) {
-    TotalStrengthAtPeriod param = new TotalStrengthAtPeriod();
-    param.setStartingIndexOfPeriod(index);
-    param.setStrength(IntStream.range(index, index + 30).mapToLong(rangeStrengths::get).sum());
-    return param;
+    return new TotalStrengthAtPeriod(
+        index, IntStream.range(index, index + 30).mapToLong(rangeStrengths::get).sum());
   }
 }

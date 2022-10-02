@@ -23,7 +23,6 @@ class HttpRequestToInputDtoParserTest {
   @Mock private HttpRequest.HttpPart httpPart;
   @Mock private InputStream inputStream;
   private HttpRequestToInputDtoParser underTest;
-  private InputDto expected;
   private AutoCloseable openMocks;
 
   @BeforeEach
@@ -36,10 +35,6 @@ class HttpRequestToInputDtoParserTest {
     doReturn(Map.of("does-not-matter", httpPart)).when(httpRequest).getParts();
     doReturn(inputStream).when(httpPart).getInputStream();
     doReturn(Optional.of("12")).when(httpRequest).getFirstQueryParameter("bandwidth");
-
-    expected = new InputDto();
-    expected.setInputStream(inputStream);
-    expected.setBandwidth(12);
 
     underTest = new HttpRequestToInputDtoParser();
   }
@@ -55,8 +50,7 @@ class HttpRequestToInputDtoParserTest {
     var actual = underTest.parse(httpRequest);
 
     // then
-
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actual).isEqualTo(new InputDto(inputStream, 12));
   }
 
   @Test
@@ -68,8 +62,7 @@ class HttpRequestToInputDtoParserTest {
     var actual = underTest.parse(httpRequest);
 
     // then
-    expected.setBandwidth(0);
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actual).isEqualTo(new InputDto(inputStream, 0));
   }
 
   @Test
@@ -111,8 +104,7 @@ class HttpRequestToInputDtoParserTest {
     var actual = underTest.parse(httpRequest);
 
     // then
-    expected.setInputStream(null);
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actual).isEqualTo(new InputDto(null, 12));
   }
 
   @Test
@@ -124,7 +116,6 @@ class HttpRequestToInputDtoParserTest {
     var actual = underTest.parse(httpRequest);
 
     // then
-    expected.setInputStream(null);
-    assertThat(actual).isEqualTo(expected);
+    assertThat(actual).isEqualTo(new InputDto(null, 12));
   }
 }

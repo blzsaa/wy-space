@@ -32,11 +32,10 @@ public class DownlinkService {
   }
 
   public ResultDto doTask(@Valid InputDto inputDto) throws IOException {
-    try (BufferedReader br = readerFactory.createNewBufferedFileReader(inputDto.getInputStream())) {
+    try (BufferedReader br = readerFactory.createNewBufferedFileReader(inputDto.inputStream())) {
       passScheduleInterpreter.readInput(br).forEach(calculator::addRange);
       MaximumTotalDownlinkResultParam dto = calculator.findRange();
-      boolean downloadable =
-          downloadPredicator.isDownloadable(dto.getRange(), inputDto.getBandwidth());
+      boolean downloadable = downloadPredicator.isDownloadable(dto.range(), inputDto.bandwidth());
       return resultTransformer.transform(dto, downloadable);
     }
   }

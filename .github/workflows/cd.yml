@@ -27,6 +27,6 @@ jobs:
         uses: google-github-actions/deploy-cloud-functions@v0
         with:
           name: wy-space
-          runtime: java11
+          runtime: java17
           entry_point: io.quarkus.gcp.functions.QuarkusHttpFunction
           source_dir: build

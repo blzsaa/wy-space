@@ -74,7 +74,7 @@ curl -F "file=@./src/integration/resources/pass-schedule.txt"  https://us-centra
 
 - requirements for local development:
   - docker
-  - java 11
+  - java 17
 - requirements for deploying to google cloud as a function
   - google cloud account
   - gcloud
@@ -112,3 +112,4 @@ Sub-tasks of user story 1701:
 - [X] **1711**: fix out of memory error in case of reading too large files
   - Acceptance criteria:
     - reading large files should not throw out of memory exception
+- [X] **1712**: upgrade to java 17

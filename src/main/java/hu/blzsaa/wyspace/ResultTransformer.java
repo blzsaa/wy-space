@@ -8,10 +8,11 @@ import javax.enterprise.context.ApplicationScoped;
 class ResultTransformer {
 
   public ResultDto transform(MaximumTotalDownlinkResultParam dto, boolean downloadable) {
-    ResultDto resultDto = new ResultDto();
-    resultDto.setDownloadable(downloadable);
-    resultDto.setStartTime(createLocalTimeFromMinute(dto.getIndexOfStartOfTheMaxPeriod()));
-    resultDto.setEndTime(createLocalTimeFromMinute(dto.getIndexOfStartOfTheMaxPeriod() + 30));
+    ResultDto resultDto =
+        new ResultDto(
+            createLocalTimeFromMinute(dto.indexOfStartOfTheMaxPeriod()),
+            createLocalTimeFromMinute(dto.indexOfStartOfTheMaxPeriod() + 30),
+            downloadable);
     return resultDto;
   }
 
