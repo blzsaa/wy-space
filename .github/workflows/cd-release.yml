@@ -1,8 +1,7 @@
-name: wy-space CD
+name: wy-space CD on new release
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
   job_id:
